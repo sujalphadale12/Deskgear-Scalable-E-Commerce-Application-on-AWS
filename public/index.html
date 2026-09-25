@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deskgear — Desk & Workspace Supply</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #171d1b;
+    --paper: #f2f1ec;
+    --paper-raised: #ffffff;
+    --line: #cfd3c9;
+    --evergreen: #145a4a;
+    --evergreen-dk: #0d4137;
+    --copper: #b5541f;
+    --muted: #6b7570;
+    --focus: #3d8f7a;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif; font-size: 16px; line-height: 1.6;
+  }
+  h1, h2, h3, .display, button, nav, .catalog-no, .kicker, label, input, select, textarea {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+  a { color: var(--evergreen-dk); }
+  button { cursor: pointer; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  img { max-width: 100%; }
+
+  /* ---- Header ---- */
+  .masthead {
+    border-bottom: 3px solid var(--ink);
+    background: var(--paper-raised);
+    padding: 22px 28px 16px;
+  }
+  .masthead-row { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; max-width: 1180px; margin: 0 auto; }
+  .wordmark { font-weight: 700; font-size: 1.9rem; letter-spacing: -0.02em; margin: 0; }
+  .wordmark span { color: var(--evergreen); }
+  .tagline { margin: 2px 0 0; color: var(--muted); font-size: 0.9rem; font-style: italic; font-family: 'Source Serif 4', serif; }
+  .masthead-actions { display: flex; align-items: center; gap: 10px; }
+  .who { font-size: 0.85rem; color: var(--muted); }
+
+  .btn {
+    font-weight: 600; font-size: 0.85rem; border-radius: 3px; border: 1.5px solid var(--ink);
+    background: var(--ink); color: var(--paper-raised); padding: 9px 16px; transition: transform .08s ease;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn.line { background: transparent; color: var(--ink); }
+  .btn.accent { background: var(--evergreen); border-color: var(--evergreen); }
+  .btn.accent:hover { background: var(--evergreen-dk); }
+  .btn.small { padding: 6px 11px; font-size: 0.78rem; }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+  /* ---- Layout ---- */
+  main { max-width: 1180px; margin: 0 auto; padding: 30px 28px 60px; display: grid; grid-template-columns: 1fr 300px; gap: 36px; align-items: start; }
+  @media (max-width: 860px) { main { grid-template-columns: 1fr; } }
+
+  .section-head { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid var(--ink); padding-bottom: 8px; margin-bottom: 20px; }
+  .section-head h2 { font-size: 1.15rem; font-weight: 600; margin: 0; letter-spacing: -0.01em; }
+  .count { font-size: 0.8rem; color: var(--muted); }
+
+  #msg { max-width: 1180px; margin: 14px auto 0; padding: 0 28px; min-height: 1.3em; font-size: 0.88rem; color: var(--evergreen-dk); font-family: 'Space Grotesk', sans-serif; }
+  #msg.err { color: var(--copper); }
+
+  /* ---- Catalog grid ---- */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px; }
+  .item {
+    background: var(--paper-raised); border: 1px solid var(--line);
+    display: flex; flex-direction: column; position: relative;
+  }
+  .item .frame { position: relative; border-bottom: 1px solid var(--line); }
+  .item img { display: block; width: 100%; aspect-ratio: 4/3; object-fit: cover; background: #e5e8e1; }
+  .catalog-no {
+    position: absolute; top: 8px; left: 8px; background: var(--ink); color: var(--paper-raised);
+    font-size: 0.68rem; font-weight: 600; padding: 3px 7px; letter-spacing: 0.02em;
+  }
+  .item .body { padding: 14px 15px 15px; display: flex; flex-direction: column; gap: 5px; flex: 1; }
+  .item h3 { margin: 0; font-size: 1.02rem; font-weight: 600; letter-spacing: -0.005em; }
+  .item p { margin: 0; color: var(--muted); font-size: 0.88rem; flex: 1; font-family: 'Source Serif 4', serif; }
+  .price-row { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; }
+  .price { font-weight: 700; font-size: 1.05rem; }
+  .stock { font-size: 0.72rem; color: var(--muted); }
+  .stock.low { color: var(--copper); }
+
+  /* ---- Sidebar (cart + add product) ---- */
+  aside { display: flex; flex-direction: column; gap: 24px; position: sticky; top: 20px; }
+  .panel { background: var(--paper-raised); border: 1px solid var(--line); padding: 18px 18px 20px; }
+  .panel h2 { font-size: 1rem; font-weight: 600; margin: 0 0 12px; border-bottom: 2px solid var(--ink); padding-bottom: 8px; }
+  .row { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; padding: 9px 0; border-bottom: 1px dashed var(--line); font-size: 0.9rem; }
+  .row:last-of-type { border-bottom: none; }
+  .row .rm { border: 0; background: none; color: var(--copper); font-size: 1.15rem; line-height: 1; padding: 0 0 0 6px; }
+  .cart-total { display: flex; justify-content: space-between; font-weight: 700; padding-top: 10px; margin-top: 4px; border-top: 2px solid var(--ink); }
+  .empty { color: var(--muted); font-size: 0.88rem; font-family: 'Source Serif 4', serif; }
+
+  form.stack { display: flex; flex-direction: column; gap: 10px; }
+  form.stack label { font-size: 0.72rem; font-weight: 600; color: var(--muted); letter-spacing: 0.01em; display: block; margin-bottom: 3px; }
+  form.stack .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  input, textarea {
+    width: 100%; padding: 8px 9px; border: 1.5px solid var(--line); border-radius: 3px;
+    background: var(--paper); font-size: 0.9rem; color: var(--ink);
+  }
+  textarea { resize: vertical; min-height: 50px; font-family: 'Source Serif 4', serif; }
+  input:focus, textarea:focus { border-color: var(--evergreen); }
+
+  /* ---- Orders ---- */
+  .orders-wrap { max-width: 1180px; margin: 0 auto 50px; padding: 0 28px; }
+  .orders-wrap h2 { font-size: 1.05rem; font-weight: 600; border-bottom: 2px solid var(--ink); padding-bottom: 8px; }
+
+  /* ---- Auth dialog ---- */
+  dialog { border: 1px solid var(--ink); border-radius: 0; padding: 26px; width: min(360px, 90vw); }
+  dialog::backdrop { background: rgba(23,29,27,0.45); }
+  dialog h2 { margin: 0 0 16px; font-size: 1.1rem; }
+  dialog .actions { display: flex; gap: 8px; margin-top: 14px; }
+
+  footer { border-top: 3px solid var(--ink); padding: 18px 28px; text-align: center; color: var(--muted); font-size: 0.78rem; }
+</style>
+</head>
+<body>
+<header class="masthead">
+  <div class="masthead-row">
+    <div>
+      <h1 class="wordmark">Desk<span>gear</span></h1>
+      <p class="tagline">Small tools for a better workday, catalog no. 3</p>
+    </div>
+    <div class="masthead-actions" id="nav"></div>
+  </div>
+</header>
+<div id="msg" role="status"></div>
+
+<main>
+  <section>
+    <div class="section-head">
+      <h2>Full catalog</h2>
+      <span class="count" id="prodCount"></span>
+    </div>
+    <div class="grid" id="products"></div>
+  </section>
+
+  <aside>
+    <div class="panel">
+      <h2>Cart</h2>
+      <div id="cart"></div>
+    </div>
+    <div class="panel">
+      <h2>List a product</h2>
+      <form class="stack" id="addForm">
+        <div>
+          <label for="pName">Name</label>
+          <input id="pName" required maxlength="150" placeholder="e.g. Desk lamp">
+        </div>
+        <div>
+          <label for="pDesc">Description</label>
+          <textarea id="pDesc" maxlength="255" placeholder="One line about it"></textarea>
+        </div>
+        <div class="two">
+          <div>
+            <label for="pPrice">Price (₹)</label>
+            <input id="pPrice" type="number" min="1" step="1" required>
+          </div>
+          <div>
+            <label for="pStock">Stock</label>
+            <input id="pStock" type="number" min="0" step="1" required>
+          </div>
+        </div>
+        <div>
+          <label for="pImg">Image URL (optional)</label>
+          <input id="pImg" type="url" placeholder="https://…">
+        </div>
+        <button type="submit" class="btn accent">Add to catalog</button>
+      </form>
+    </div>
+  </aside>
+</main>
+
+<div class="orders-wrap" id="orders"></div>
+
+<footer>Deskgear — a demo storefront running on Node.js and Amazon RDS.</footer>
+
+<dialog id="authDlg">
+  <h2 id="authTitle">Log in</h2>
+  <form class="stack" id="authForm">
+    <div id="nameField">
+      <label for="aName">Full name</label>
+      <input id="aName" autocomplete="name">
+    </div>
+    <div>
+      <label for="aEmail">Email</label>
+      <input id="aEmail" type="email" autocomplete="email" required>
+    </div>
+    <div>
+      <label for="aPass">Password</label>
+      <input id="aPass" type="password" autocomplete="current-password" required>
+    </div>
+    <div class="actions">
+      <button type="submit" class="btn accent" id="aGo"></button>
+      <button type="button" class="btn line" id="aCancel">Cancel</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const inr = n => '₹' + Number(n).toLocaleString('en-IN');
+let products = [], cart = JSON.parse(localStorage.getItem('cart') || '[]');
+let session = JSON.parse(localStorage.getItem('session') || 'null');
+let mode = 'login';
+
+function say(text, isErr) { $('msg').textContent = text; $('msg').className = isErr ? 'err' : ''; }
+async function api(path, opts = {}) {
+  opts.headers = { 'Content-Type': 'application/json', ...(session ? { Authorization: 'Bearer ' + session.token } : {}) };
+  const r = await fetch(path, opts);
+  const data = await r.json();
+  if (!r.ok) throw new Error(data.error || 'Something went wrong');
+  return data;
+}
+
+function renderNav() {
+  $('nav').innerHTML = session
+    ? `<span class="who">Signed in as ${esc(session.name)}</span><button class="btn line small" id="lo">Log out</button>`
+    : `<button class="btn line small" id="li">Log in</button><button class="btn small" id="su">Create account</button>`;
+  if (session) $('lo').onclick = () => { session = null; localStorage.removeItem('session'); renderNav(); $('orders').innerHTML = ''; say('Logged out'); };
+  else { $('li').onclick = () => openAuth('login'); $('su').onclick = () => openAuth('register'); }
+}
+function openAuth(m) {
+  mode = m;
+  $('authTitle').textContent = m === 'login' ? 'Log in' : 'Create account';
+  $('aGo').textContent = m === 'login' ? 'Log in' : 'Create account';
+  $('nameField').style.display = m === 'login' ? 'none' : 'block';
+  $('aName').required = m !== 'login';
+  $('authDlg').showModal();
+}
+$('aCancel').onclick = () => $('authDlg').close();
+$('authForm').onsubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const body = { email: $('aEmail').value, password: $('aPass').value, name: $('aName').value };
+    session = await api('/api/' + mode, { method: 'POST', body: JSON.stringify(body) });
+    localStorage.setItem('session', JSON.stringify(session));
+    $('authDlg').close(); renderNav(); loadOrders(); say('Welcome, ' + session.name);
+  } catch (e2) { say(e2.message, true); $('authDlg').close(); }
+};
+
+function renderProducts() {
+  $('prodCount').textContent = products.length + (products.length === 1 ? ' item' : ' items');
+  $('products').innerHTML = products.map((p, i) => `
+    <div class="item">
+      <div class="frame">
+        <span class="catalog-no">DG-${String(p.id).padStart(3, '0')}</span>
+        <img src="${esc(p.image_url || '/images/placeholder.svg')}" alt="${esc(p.name)}" loading="lazy" onerror="this.onerror=null;this.src='/images/placeholder.svg'">
+      </div>
+      <div class="body">
+        <h3>${esc(p.name)}</h3>
+        <p>${esc(p.description || '')}</p>
+        <div class="price-row">
+          <span class="price">${inr(p.price)}</span>
+          <span class="stock ${p.stock < 5 ? 'low' : ''}">${p.stock < 1 ? 'Sold out' : p.stock + ' left'}</span>
+        </div>
+        <button class="btn accent small" onclick="add(${p.id})" ${p.stock < 1 ? 'disabled' : ''} style="margin-top:4px">${p.stock < 1 ? 'Sold out' : 'Add to cart'}</button>
+      </div>
+    </div>`).join('') || '<p class="empty">Nothing in the catalog yet — list the first product.</p>';
+}
+function add(id) {
+  const line = cart.find(c => c.product_id === id);
+  line ? line.qty++ : cart.push({ product_id: id, qty: 1 });
+  saveCart();
+}
+function remove(id) { cart = cart.filter(c => c.product_id !== id); saveCart(); }
+function saveCart() { localStorage.setItem('cart', JSON.stringify(cart)); renderCart(); }
+function renderCart() {
+  if (!cart.length) { $('cart').innerHTML = '<p class="empty">Nothing here yet.</p>'; return; }
+  let total = 0;
+  const rows = cart.map(c => {
+    const p = products.find(x => x.id === c.product_id); if (!p) return '';
+    total += p.price * c.qty;
+    return `<div class="row"><span>${esc(p.name)} × ${c.qty}</span><span>${inr(p.price * c.qty)} <button class="rm" onclick="remove(${p.id})" aria-label="Remove ${esc(p.name)}">×</button></span></div>`;
+  }).join('');
+  $('cart').innerHTML = rows + `<div class="cart-total"><span>Total</span><span>${inr(total)}</span></div>
+    <p><button class="btn accent" style="width:100%;margin-top:12px" onclick="checkout()">Place order</button></p>`;
+}
+async function checkout() {
+  if (!session) return openAuth('login');
+  try {
+    const r = await api('/api/orders', { method: 'POST', body: JSON.stringify({ items: cart }) });
+    cart = []; saveCart(); await loadProducts(); loadOrders();
+    say(`Order #${r.orderId} placed — total ${inr(r.total)}`);
+  } catch (e) { say(e.message, true); }
+}
+async function loadOrders() {
+  if (!session) return;
+  try {
+    const o = await api('/api/orders');
+    $('orders').innerHTML = '<h2>Your orders</h2>' + (o.length
+      ? o.map(x => `<div class="row"><span>#${x.id}: ${esc(x.items)}</span><span>${inr(x.total)}</span></div>`).join('')
+      : '<p class="empty">No orders yet.</p>');
+  } catch { session = null; localStorage.removeItem('session'); renderNav(); }
+}
+async function loadProducts() { products = await api('/api/products'); renderProducts(); renderCart(); }
+
+$('addForm').onsubmit = async (e) => {
+  e.preventDefault();
+  if (!session) { say('Log in first to list a product', true); return openAuth('login'); }
+  try {
+    await api('/api/products', {
+      method: 'POST',
+      body: JSON.stringify({
+        name: $('pName').value, description: $('pDesc').value,
+        price: $('pPrice').value, stock: $('pStock').value, image_url: $('pImg').value
+      })
+    });
+    $('addForm').reset();
+    await loadProducts();
+    say('Product added to the catalog');
+  } catch (e2) { say(e2.message, true); }
+};
+
+renderNav(); loadProducts(); loadOrders();
+</script>
+</body>
+</html>
